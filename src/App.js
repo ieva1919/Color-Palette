@@ -7,11 +7,22 @@ import { generatePalette } from "./ColorHelpers.js"
 
 
 function App() {
+
+  function findPalette(id) {
+    return seedColors.find(p => p.id === id)
+  }
+
   return (
     <div>
       <Switch>
         <Route exact path="/" render={() => <h1>PALETTE LIST GEOS HERE</h1>} />
-        <Route exact path="/patette/:id" render={() => <h1>Individuell Palette</h1>} />
+        <Route exact path="/palette/:id" render={routeProps =>
+          <Palette
+            palette={generatePalette(
+              findPalette(routeProps.match.params.id)
+            )}
+          />}
+        />
       </Switch>
 
       {/* <Palette palette={generatePalette(seedColors[4])} /> */}
