@@ -14,9 +14,13 @@ export default {
         flexWrap: "wrap",
     },
     nav: {
-        dipslay: "flex",
+        display: "flex",
         width: "100%",
-        justifyConten: "space-between"
+        justifyContent: "space-between",
+        alignItems: "center",
+        "& a": {
+            color: "white",
+        }
     },
     palettes: {
         width: "100%",
