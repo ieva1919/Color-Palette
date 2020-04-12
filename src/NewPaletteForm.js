@@ -11,7 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Button from '@material-ui/core/Button';
-import DraggableColorBox from "./DraggableColorBox";
 import DraggableColorList from "./DraggableColorList";
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { ChromePicker } from "react-color";
@@ -78,10 +77,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function NewPaletteForm(props) {
+
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [currentColor, setCurrentColor] = useState("teal");
-    const [colors, setColors] = useState([])
+    const [colors, setColors] = useState(props.palettes[0].colors)
     const [newColorName, setNewColorName] = useState("")
     const [newPaletteName, setNewPaletteName] = useState("")
 
@@ -120,6 +120,17 @@ export default function NewPaletteForm(props) {
         setNewColorName("")
     };
 
+    function clearColor() {
+        setColors([])
+    }
+
+    function addRandomColor() {
+        const allColors = props.palettes.map(p => p.colors).flat()
+        var rand = Math.floor(Math.random() * allColors.length)
+        const randomColor = allColors[rand]
+        setColors([...colors, randomColor])
+    }
+
     function handleSubmit() {
         let newName = newPaletteName;
         const newPalette = {
@@ -138,6 +149,8 @@ export default function NewPaletteForm(props) {
     function onSortEnd({ oldIndex, newIndex }) {
         setColors(colors => arrayMove(colors, oldIndex, newIndex))
     }
+
+    const paletteIsFull = colors.length >= props.maxColors;
 
     return (
         <div className={classes.root}>
@@ -196,10 +209,14 @@ export default function NewPaletteForm(props) {
                 <Divider />
                 <Typography variant="h4">Design your palette</Typography>
                 <div>
-                    <Button variant="contained" color="secondary">
+                    <Button variant="contained" color="secondary" onClick={clearColor}>
                         Clear Palette
                     </Button>
-                    <Button variant="contained" color="primary">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={addRandomColor}
+                        disabled={paletteIsFull}>
                         Random Color
                     </Button>
                 </div>
@@ -219,10 +236,11 @@ export default function NewPaletteForm(props) {
                         variant="contained"
                         type="submit"
                         color="primary"
-                        style={{ backgroundColor: currentColor }}
+                        disabled={paletteIsFull}
+                        style={{ backgroundColor: paletteIsFull ? "grey" : currentColor }}
                     >
-                        Add Color
-                        </Button>
+                        {paletteIsFull ? "Palette is full" : "Add Color"}
+                    </Button>
                 </ValidatorForm>
             </Drawer>
             <main
@@ -240,4 +258,8 @@ export default function NewPaletteForm(props) {
             </main>
         </div>
     );
+}
+
+NewPaletteForm.defaultProps = {
+    maxColors: 20,
 }
