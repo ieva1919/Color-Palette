@@ -140,6 +140,7 @@ export default function NewPaletteForm(props) {
                 setOpen={setOpen}
                 classes={classes}
                 onSubmit={savePallete}
+                palettes={palettes}
             />
             <Drawer
                 className={classes.drawer}
